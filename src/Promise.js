@@ -1,6 +1,23 @@
 define(['Events'],function(Events){
     var undef, async;
 
+    function extend(obj, parent, methods) {
+        var name;
+
+        function F(){};
+
+        F.prototype = parent.prototype || parent;
+
+        obj.prototype = new F();
+        obj.prototype.constructor = obj;
+
+        for (name in methods) {
+            if (methods.hasOwnProperty(name)) obj.prototype[name] = methods[name];
+        }
+
+        return obj;
+    }
+
     async = (function(){
         try {
             if (process && process.nextTick) {
@@ -45,8 +62,13 @@ define(['Events'],function(Events){
         fulfillment_state : Promise.STATES.PENDING,
         fulfillment_value : undef,
         rejection_reason : undef,
+        createPromise : function(){
+            var cnstr = this.constructor;
+
+            return new cnstr();
+        },
         then : function(cb, err) {
-            var promise = new Promise();
+            var promise = this.createPromise();
 
             this._addEvents({
                 'fulfill' : function(e) {
@@ -92,7 +114,7 @@ define(['Events'],function(Events){
             if (value instanceof Promise) {
                 value._addEvents({
                     'fulfill': function(e){
-                        $this.fullfil(e.args);
+                        $this.fulfill(e.args);
                     },
                     'reject' : function(e) {
                         $this.reject(e.args);
@@ -121,6 +143,36 @@ define(['Events'],function(Events){
 
             return this;
         }
+    };
+
+    Promise.extend = function(obj, methods){
+        var wrapped_methods = {};
+
+        function wrap(name){
+            return function(){
+                var args = [].slice.call(arguments);
+
+                if (this.isFulfilled) {
+                    return obj[name].apply(obj, args);
+                }
+
+                this.then(function() {
+                    obj[name].apply(obj, args);
+                });
+            }
+        }
+
+        function ExtPromise(){
+            Promise.apply(this, arguments);
+        }
+
+        methods.forEach(function(name){
+            wrapped_methods[name] = wrap(name);
+        });
+
+        extend(ExtPromise, Promise, wrapped_methods);
+
+        return ExtPromise;
     };
 
     return Promise;

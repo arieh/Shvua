@@ -117,5 +117,54 @@ describe(['Promise'], "Promise", function(Promise){
 
             expect(values).toEqual([1,2]);
         });
+
+        waitsFor(function(){return done;}, "waiting for timeout", 500);
+    });
+
+    it('Should have a functioning extend method', function(){
+        function test(){
+            var promise;
+
+            this.setA = function(a){
+                this.a = a;
+            };
+
+            this.setB = function(b){
+                this.b = b;
+            };
+
+            this.async = function(){
+                return new promise(function(f){
+                    setTimeout(function(){
+                        f(1);
+                    }, 100);
+                });
+            };
+
+            promise = Promise.extend(this, ['setA', 'setB']);
+        }
+
+        var tst = new test(), promise, done;
+
+        promise = tst.async();
+        promise.setA('a');
+
+        expect(tst.a).toEqual(undef);
+        expect(tst.b).toEqual(undef);
+
+
+        promise.then(function(value){
+            done = 1;
+
+            expect(value).toEqual(1);
+            expect(tst.a).toEqual('a');
+
+            promise.setB('b');
+
+            expect(tst.b).toEqual('b');
+        });
+
+
+        waitsFor(function(){return done;}, "waiting for timeout", 500);
     });
 });
