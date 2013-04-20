@@ -1,4 +1,19 @@
-define(['Events'],function(Events){
+(function (root, factory) {
+    if (typeof exports === 'object') {
+        var Events = require('Events').Events;
+        module.exports = factory(Events);
+    } else if (typeof define === 'function' && define.amd) {
+        define(['Events'],function (Events) {
+            return factory(Events.Events);
+        });
+    } else {
+        root.Promise = factory(Events);
+    }
+}(this, function (Events){
+    /**
+     * @module Promise
+     */
+
     var undef, async;
 
     function extend(obj, parent, methods) {
@@ -34,11 +49,18 @@ define(['Events'],function(Events){
         }
     }());
 
+    /**
+     * @class Promise
+     * @constructor
+     * @uses Events
+     *
+     * @param {fucntion} [cb] a function to use for updating promise state. Paramaters passed to callback will be fullfil function and reject function.
+     */
     function Promise(cb){
         var fulfill = this.fulfill.bind(this),
             reject  = this.reject.bind(this);
 
-        Events.Events.call(this);
+        Events.call(this);
         this._addEvents = this.addEvents;
         this._fireEvent = this.fireEvent;
 
@@ -49,6 +71,22 @@ define(['Events'],function(Events){
         });
     }
 
+    /**
+     * @event fulfill
+     * fires when a promise has been fulfilled
+     * @param value the promise's value
+     */
+    /**
+     * @event reject
+     * fires when a promise has been rejected
+     * @param reason the rejection's reason
+     */
+
+    /**
+     * @const STATES
+     * @static
+     * @type ENUM
+     */
     Promise.STATES = {
         PENDING : 0,
         FULFILLED : 1,
@@ -57,16 +95,50 @@ define(['Events'],function(Events){
 
     Promise.prototype = {
         constructor : Promise,
+
+        /**
+         * @property isFulfilled
+         * whether or not promise has been fulfilled
+         * @type Boolean
+         */
         isFulfilled : false,
+
+        /**
+         * @property isRejected
+         * whether or not promise has been rejected
+         * @type Boolean
+         */
         isRejected : false,
+        /**
+         * @property fulfillment_state
+         * @type Promise.STATES
+         */
         fulfillment_state : Promise.STATES.PENDING,
+        /**
+         * @property fulfillment_value
+         * value of fulfilled promise
+         */
         fulfillment_value : undef,
+        /**
+         * @property rejection_reason
+         * reason for rejected promise
+         */
         rejection_reason : undef,
         createPromise : function(){
             var cnstr = this.constructor;
 
             return new cnstr();
         },
+
+        /**
+         * This method allows the user to take action upon promise fulfillment or rejection
+         * @method then
+         *
+         * @param {function} [cb] a callback to call when promise has been fulfilled. Will be passed promise's value.
+         *                        for more info look in spec.
+         * @param {function} [err] a callback to call upon rejection. Will be passed promise's rejection reason.
+         * @returns {Promise}
+         */
         then : function(cb, err) {
             var promise = this.createPromise();
 
@@ -82,7 +154,7 @@ define(['Events'],function(Events){
                     }
 
                     if (error) {
-                        promise.reject(error);
+                        async(function(){promise.reject(error);});
                         return;
                     }
 
@@ -93,17 +165,24 @@ define(['Events'],function(Events){
                             promise.reject(err);
                         });
                     }else {
-                        promise.fulfill(value);
+                        async(function(){promise.fulfill(value);});
                     }
                 },
                 'reject' : function(e) {
                     err && err(e.args);
-                    promise.reject(e.args);
+                    async(function(){promise.reject(e.args);});
                 }
             });
 
             return promise;
         },
+
+        /**
+         * this method can be used to fulfil a Promise outside of it's scope.
+         *
+         * @param value
+         * @chainable
+         */
         fulfill : function(value) {
             var $this = this;
 
@@ -129,9 +208,13 @@ define(['Events'],function(Events){
 
             return this;
         },
+        /**
+         * this method can be used to reject a promise outside the scope
+         *
+         * @param reason
+         * @chainable
+         */
         reject : function(reason) {
-            var $this = this;
-
             if (this.fulfillment_state != Promise.STATES.PENDING) {
                 throw "Trying to modify state of non-pending Promise";
             }
@@ -145,6 +228,16 @@ define(['Events'],function(Events){
         }
     };
 
+
+    /**
+     * This method can be used to create custom promises that would wrap an object's methods
+     * @method extend
+     * @static
+     *
+     * @param {mixed} obj target object
+     * @param {array} methods a list of method names to wrap
+     * @returns {Promise} a new extended Promise constructor
+     */
     Promise.extend = function(obj, methods){
         var wrapped_methods = {};
 
@@ -176,4 +269,4 @@ define(['Events'],function(Events){
     };
 
     return Promise;
-});
+}));
