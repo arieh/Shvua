@@ -199,7 +199,7 @@
             var $this = this;
 
             if (this.fulfillment_state != Promise.STATES.PENDING) {
-                throw "Trying to modify state of non-pending Promise";
+                return this;
             }
 
             if (isThenable(value)) {
@@ -225,7 +225,7 @@
          */
         reject : function(reason) {
             if (this.fulfillment_state != Promise.STATES.PENDING) {
-                throw "Trying to modify state of non-pending Promise";
+                return this;
             }
 
             this.fulfillment_state = Promise.STATES.REJECTED;

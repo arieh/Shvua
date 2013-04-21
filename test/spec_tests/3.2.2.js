@@ -31,27 +31,19 @@ describe(['spec_helpers/adapter','spec_helpers/testThreeCases', 'spec_helpers/as
         it("trying to fulfill a pending promise more than once, immediately", function (done) {
             var tuple = pending();
             var timesCalled = 0;
-            var err
 
             tuple.promise.then(function onFulfilled() {
                 expect(++timesCalled).toEqual(1);
                 done();
             });
 
-            try {
-                tuple.fulfill(dummy);
-                tuple.fulfill(dummy);
-            }catch(e){
-                err = e;
-            }
-
-            expect(err).toBeTruthy();
+            tuple.fulfill(dummy);
+            tuple.fulfill(dummy);
         });
 
         it("trying to fulfill a pending promise more than once, delayed", function (done) {
             var tuple = pending();
             var timesCalled = 0;
-            var err;
 
             tuple.promise.then(function onFulfilled() {
                 expect(++timesCalled).toEqual(1);
@@ -59,21 +51,14 @@ describe(['spec_helpers/adapter','spec_helpers/testThreeCases', 'spec_helpers/as
             });
 
             setTimeout(function () {
-                try {
-                    tuple.fulfill(dummy);
-                    tuple.fulfill(dummy);
-                }catch(e){
-                    err = e;
-                }
-
-                expect(err).toBeTruthy();
+                tuple.fulfill(dummy);
+                tuple.fulfill(dummy);
             }, 50);
         });
 
         it("trying to fulfill a pending promise more than once, immediately then delayed", function (done) {
             var tuple = pending();
             var timesCalled = 0;
-            var err;
 
             tuple.promise.then(function onFulfilled() {
                 expect(++timesCalled).toEqual(1);
@@ -82,13 +67,7 @@ describe(['spec_helpers/adapter','spec_helpers/testThreeCases', 'spec_helpers/as
 
             tuple.fulfill(dummy);
             setTimeout(function () {
-                try {
-                    tuple.fulfill(dummy);
-                }catch(e){
-                    err = e;
-                }
-
-                expect(err).toBeTruthy();
+                tuple.fulfill(dummy);
             }, 50);
         });
 
@@ -152,7 +131,6 @@ describe(['spec_helpers/adapter','spec_helpers/testThreeCases', 'spec_helpers/as
         it("trying to reject then immediately fulfill", function (done) {
             var tuple = pending();
             var onRejectedCalled = false;
-            var err;
 
             tuple.promise.then(function onFulfilled() {
                 assert.strictEqual(onRejectedCalled, false);
@@ -162,14 +140,7 @@ describe(['spec_helpers/adapter','spec_helpers/testThreeCases', 'spec_helpers/as
             });
 
             tuple.reject(dummy);
-
-            try{
-                tuple.fulfill(dummy);
-            }catch(e) {
-                err = e;
-            }
-
-            expect(err).toBeTruthy();
+            tuple.fulfill(dummy);
 
             setTimeout(done, 100);
         });
