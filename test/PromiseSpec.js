@@ -13,7 +13,7 @@ describe(['Promise'], "Promise", function(Promise){
         expect(promise.fulfillment_state).toEqual(Promise.STATES.PENDING);
 
         promise.then(function(value) {
-            done = 1;
+            done();
             expect(value).toEqual(1);
         });
     });
@@ -26,7 +26,7 @@ describe(['Promise'], "Promise", function(Promise){
         expect(promise.isFulfilled).toEqual(false);
 
         setTimeout(function(){
-            done = 1;
+            done();
             expect(promise.isFulfilled).toEqual(true);
         },0);
 
@@ -39,7 +39,7 @@ describe(['Promise'], "Promise", function(Promise){
             });
 
         setTimeout(function(){
-            done = 1;
+            done();
             expect(promise.fulfillment_state).toEqual(Promise.STATES.REJECTED);
             expect(promise.isRejected).toEqual(true);
             expect(promise.rejection_reason).toEqual(1);
@@ -63,7 +63,7 @@ describe(['Promise'], "Promise", function(Promise){
         });
 
         setTimeout(function(){
-            done = 1;
+            done();
             expect(values).toEqual([1,2,3]);
         }, 100);
     });
@@ -79,7 +79,7 @@ describe(['Promise'], "Promise", function(Promise){
         }).then(function(){
             values.push(2);
         }).then(null, function(err){
-            done = 1;
+            done();
             expect(err).toEqual(1);
             expect(values).toEqual([]);
         });
@@ -100,7 +100,7 @@ describe(['Promise'], "Promise", function(Promise){
             });
         }).then(function(value){
             values.push(value);
-            done = 1;
+            done();
 
             expect(values).toEqual([1,2]);
         });
@@ -139,7 +139,7 @@ describe(['Promise'], "Promise", function(Promise){
 
 
         promise.then(function(value){
-            done = 1;
+            done();
 
             expect(value).toEqual(1);
             expect(tst.a).toEqual('a');

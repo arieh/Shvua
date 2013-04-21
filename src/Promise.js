@@ -17,7 +17,11 @@
     var undef, async;
 
     function isThenable(obj) {
-        return obj && typeof obj == 'function';
+        return obj && typeof obj.then == 'function';
+    }
+
+    function isFunction(fn) {
+        return typeof fn == 'function';
     }
 
     function extend(obj, parent, methods) {
@@ -71,7 +75,7 @@
         if (!cb) return;
 
         async(function(){
-            if (cb && typeof cb == 'function') {
+            if (isFunction(cb)) {
                 cb(fulfill, reject);
             }else if (isThenable(cb)) {
                 fulfill(cb);
@@ -155,7 +159,7 @@
                     var value, error;
 
                     try {
-                        value = cb && cb(e.args);
+                        value = isFunction(cb) && cb(e.args);
                     } catch(er) {
                         value = er;
                         error = true;
@@ -177,7 +181,7 @@
                     }
                 },
                 'reject' : function(e) {
-                    err && err(e.args);
+                    isFunction(err) && err(e.args);
                     async(function(){promise.reject(e.args);});
                 }
             });
@@ -244,8 +248,7 @@
      * @returns {Promise} a new extended Promise constructor
      */
     Promise.extend = function(obj, methods){
-        var wrapped_methods = {},
-            events_proxies = "addEvent addEvents fireEvent removeEvent".split(' ');
+        var wrapped_methods = {};
 
         function wrap(name){
             return function(){
@@ -256,35 +259,8 @@
                 });
             }
         }
-
-        function wrapEvents(name) {
-            return function() {
-                obj[name].apply(obj, arguments);
-
-                return this;
-            }
-        }
-
         function ExtPromise(){
             Promise.apply(this, arguments);
-
-            this._addEvents = function _addEvents(events){
-                if (this.$events_destroyed) return this;
-
-                var type;
-
-                for (type in events) if (events.hasOwnProperty(type)){
-                    Events.addEvent.call(this, type, events[type]);
-                }
-
-                return this;
-            };
-
-            this._fireEvent = Events.fireEvent.bind(this);
-
-            events_proxies.forEach(function(name){
-                this[name] = wrapEvents(name);
-            }.bind(this));
         }
 
         methods.forEach(function(name){

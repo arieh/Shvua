@@ -4,7 +4,7 @@
 
     window.describe = function describe(modules, name, cb){
         if (!cb && typeof modules == 'string') {
-            return describe(modules, name);
+            return old_desc(modules, name);
         }
 
         define(modules, function(){
@@ -21,7 +21,7 @@
         old_it(name, function(){
             var done = 0;
 
-            cb(done);
+            cb(function(){done = 1});
 
             waitsFor(function(){return done;}, "waiting for async action to finish", timeout || 3 * 1000);
         });

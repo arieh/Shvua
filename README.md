@@ -76,16 +76,4 @@ obj.async()
       console.log(e);//test error
    });
 ```
-
-### `Promise.extend` and `Events`
-
-Since events are async by nature, if the `extend` method was passed an object that uses the `Events` library, it would
-call the `Events` methods immediately, while still returning a promise:
-
-```js
-obj.addEvent('foo', function(){
-       console.log('foo');
-   })
-   .then(function(){})
-   .fireEvent('foo');//will immediately log 'foo'
 ```
