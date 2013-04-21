@@ -183,13 +183,15 @@
                     });
                 },
                 'reject' : function(e) {
-                    var reason =e.args;
+                    var reason = e.args;
 
                     async(function(){
-                        try {
-                            isFunction(err) && err(e.args);
-                        } catch (er) {
-                            reason = er;
+                        if (isFunction(err)){
+                            try {
+                                reason = err(e.args);
+                            } catch (er) {
+                                reason = er;
+                            }
                         }
 
                         promise.reject(reason);

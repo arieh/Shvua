@@ -186,32 +186,32 @@ function (assert, testThreeCases, sinon) {
             });
         });
 
-//        describe("results in multiple branching chains with their own fulfillment values", function () {
-//            testRejected(sentinel, function (promise, done) {
-//                var semiDone = callbackAggregator(3, done);
-//
-//                promise.then(null, function () {
-//                    return sentinel;
-//                }).then(null, function (value) {
-//                        assert.strictEqual(value, sentinel);
-//                        semiDone();
-//                    });
-//
-//                promise.then(null, function () {
-//                    throw sentinel2;
-//                }).then(null, function (reason) {
-//                        assert.strictEqual(reason, sentinel2);
-//                        semiDone();
-//                    });
-//
-//                promise.then(null, function () {
-//                    return sentinel3;
-//                }).then(function (value) {
-//                        assert.strictEqual(value, sentinel3);
-//                        semiDone();
-//                    });
-//            });
-//        });
+        describe("results in multiple branching chains with their own fulfillment values", function () {
+            testRejected(sentinel, function (promise, done) {
+                var semiDone = callbackAggregator(2, done);
+
+                promise.then(null, function () {
+                    return sentinel;
+                }).then(null, function (value) {
+                        assert.strictEqual(value, sentinel);
+                        semiDone();
+                    });
+
+                promise.then(null, function () {
+                    throw sentinel2;
+                }).then(null, function (reason) {
+                        assert.strictEqual(reason, sentinel2);
+                        semiDone();
+                    });
+
+                promise.then(null, function () {
+                    return sentinel3;
+                }).then(null, function (value) {
+                        assert.strictEqual(value, sentinel3);
+                        semiDone();
+                    });
+            });
+        });
 
         describe("`onRejected` handlers are called in the original order", function () {
             testRejected(dummy, function (promise, done) {
