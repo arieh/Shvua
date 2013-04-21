@@ -16,6 +16,10 @@
 
     var undef, async;
 
+    function isThenable(obj) {
+        return obj && typeof obj == 'function';
+    }
+
     function extend(obj, parent, methods) {
         var name;
 
@@ -67,7 +71,11 @@
         if (!cb) return;
 
         async(function(){
-            cb(fulfill, reject);
+            if (cb && typeof cb == 'function') {
+                cb(fulfill, reject);
+            }else if (isThenable(cb)) {
+                fulfill(cb);
+            }
         });
     }
 
@@ -158,11 +166,11 @@
                         return;
                     }
 
-                    if (value && value.then){
+                    if (isThenable(value)){
                         value.then(function(value){
                             promise.fulfill(value);
-                        }, function(err) {
-                            promise.reject(err);
+                        }, function(reason) {
+                            promise.reject(reason);
                         });
                     }else {
                         async(function(){promise.fulfill(value);});
@@ -190,14 +198,11 @@
                 throw "Trying to modify state of non-pending Promise";
             }
 
-            if (value instanceof Promise) {
-                value._addEvents({
-                    'fulfill': function(e){
-                        $this.fulfill(e.args);
-                    },
-                    'reject' : function(e) {
-                        $this.reject(e.args);
-                    }
+            if (isThenable(value)) {
+                value.then(function(value){
+                    $this.fulfill(value);
+                }, function(reason) {
+                    $this.reject(reason);
                 });
             } else {
                 this.fulfillment_state = Promise.STATES.FULFILLED;
@@ -239,7 +244,8 @@
      * @returns {Promise} a new extended Promise constructor
      */
     Promise.extend = function(obj, methods){
-        var wrapped_methods = {};
+        var wrapped_methods = {},
+            events_proxies = "addEvent addEvents fireEvent removeEvent".split(' ');
 
         function wrap(name){
             return function(){
@@ -251,8 +257,34 @@
             }
         }
 
+        function wrapEvents(name) {
+            return function() {
+                obj[name].apply(obj, arguments);
+
+                return this;
+            }
+        }
+
         function ExtPromise(){
             Promise.apply(this, arguments);
+
+            this._addEvents = function _addEvents(events){
+                if (this.$events_destroyed) return this;
+
+                var type;
+
+                for (type in events) if (events.hasOwnProperty(type)){
+                    Events.addEvent.call(this, type, events[type]);
+                }
+
+                return this;
+            };
+
+            this._fireEvent = Events.fireEvent.bind(this);
+
+            events_proxies.forEach(function(name){
+                this[name] = wrapEvents(name);
+            }.bind(this));
         }
 
         methods.forEach(function(name){
