@@ -36,3 +36,21 @@ obj.a; //undefined
 obj.a; //'a'
 
 ```
+What's cool about these new costume Promises is that all API points return new promises, so the same error handling
+mechanism governs them. This way:
+
+```js
+obj.async()
+   .then(function(){
+      //do somthing
+   })
+   .setA('a')
+   .then(fuction(){
+      throw "test error";
+   })
+   .setA('b')
+   .then(function(){}, function(e){
+      console.log(obj.a);//a
+      console.log(e);//test error
+   });
+```
