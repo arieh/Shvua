@@ -245,11 +245,7 @@
             return function(){
                 var args = [].slice.call(arguments);
 
-                if (this.isFulfilled) {
-                    return obj[name].apply(obj, args);
-                }
-
-                this.then(function() {
+                return this.then(function() {
                     obj[name].apply(obj, args);
                 });
             }
