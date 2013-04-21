@@ -1,3 +1,8 @@
 require.config({
-  baseUrl: '/test/src'
+  baseUrl: '/test/src',
+  shim : {
+      'spec_helpers/sinon': {
+          exports: 'sinon'
+      },
+  }
 });

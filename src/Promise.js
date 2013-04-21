@@ -158,31 +158,42 @@
                 'fulfill' : function(e) {
                     var value, error;
 
-                    try {
-                        value = isFunction(cb) && cb(e.args);
-                    } catch(er) {
-                        value = er;
-                        error = true;
-                    }
+                    async(function(){
+                        try {
+                            value = isFunction(cb) && cb(e.args);
+                        } catch(er) {
+                            value = er;
+                            error = true;
+                        }
 
-                    if (error) {
-                        async(function(){promise.reject(error);});
-                        return;
-                    }
+                        if (error) {
+                            promise.reject(value);
+                            return;
+                        }
 
-                    if (isThenable(value)){
-                        value.then(function(value){
+                        if (isThenable(value)){
+                            value.then(function(value){
+                                promise.fulfill(value);
+                            }, function(reason) {
+                                promise.reject(reason);
+                            });
+                        }else {
                             promise.fulfill(value);
-                        }, function(reason) {
-                            promise.reject(reason);
-                        });
-                    }else {
-                        async(function(){promise.fulfill(value);});
-                    }
+                        }
+                    });
                 },
                 'reject' : function(e) {
-                    isFunction(err) && err(e.args);
-                    async(function(){promise.reject(e.args);});
+                    var reason =e.args;
+
+                    async(function(){
+                        try {
+                            isFunction(err) && err(e.args);
+                        } catch (er) {
+                            reason = er;
+                        }
+
+                        promise.reject(reason);
+                    });
                 }
             });
 

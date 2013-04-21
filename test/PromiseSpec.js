@@ -142,11 +142,13 @@ describe(['Promise'], "Promise", function(Promise){
             done();
 
             expect(value).toEqual(1);
-            expect(tst.a).toEqual('a');
 
             promise.setB('b');
 
-            expect(tst.b).toEqual('b');
+            setTimeout(function(){
+                expect(tst.a).toEqual('a');
+                expect(tst.b).toEqual('b');
+            }, 10);
         });
     });
 
