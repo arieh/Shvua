@@ -47,5 +47,20 @@ describe(['Promise'], "Promise", function(Promise){
         });
     });
 
+    it("Should be able to function even when extending object with events api", function(done){
+        function empty(){};
+        var names = 'addEvent fireEvent addEvents fireLatchedEvent'.split(' '),
+            obj = {},
+            promise,p;
 
+        names.forEach(function(name){obj[name]=empty});
+
+        promise = Promise.extend(obj, names);
+
+        p = new Promise(function(f){
+            f(1)
+        }).addEvent('foo').then(function(value){
+            done();
+        })
+    });
 });

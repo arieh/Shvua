@@ -1,0 +1,8 @@
+{
+    "name": "Vows",
+    "options": {
+        "linkNatives": "true",
+        "outdir": "./docs",
+        "paths": "."
+    }
+}

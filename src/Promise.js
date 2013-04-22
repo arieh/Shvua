@@ -69,8 +69,23 @@
             reject  = this.reject.bind(this);
 
         Events.call(this);
-        this._addEvents = this.addEvents;
-        this._fireEvent = this.fireEvent;
+
+        this._addEvents = function(events) {
+            var type;
+            for (type in events) {
+                Events.addEvent.call(this, type, events[type]);
+            }
+        };
+
+        this._fireEvent = function (type, args){
+            if (this.$events_destroyed) return this;
+            if (!this.$latched) this.$latched = {};
+
+            this.$latched[type] = {args : args};
+            Events.fireEvent.call(this,type,args);
+
+            return this;
+        };
 
         if (!cb) return;
 
@@ -146,58 +161,49 @@
          * This method allows the user to take action upon promise fulfillment or rejection
          * @method then
          *
-         * @param {function} [cb] a callback to call when promise has been fulfilled. Will be passed promise's value.
+         * @param {function} [onFulfill] a callback to call when promise has been fulfilled. Will be passed promise's value.
          *                        for more info look in spec.
-         * @param {function} [err] a callback to call upon rejection. Will be passed promise's rejection reason.
+         * @param {function} [onReject] a callback to call upon rejection. Will be passed promise's rejection reason.
          * @returns {Promise}
          */
-        then : function(cb, err) {
+        then : function(onFulfill, onReject) {
             var promise = this.createPromise();
+
+            function checkValue(action, cb, value){
+                async(function(){
+                    if (isFunction(cb)) {
+                        try {
+                            value = cb(value);
+                        } catch (e) {
+                            promise.reject(e);
+                            return;
+                        }
+                    } else if (action == 'reject') {
+                        promise.reject(value);
+                    }
+
+                    if (isThenable(value)) {
+                        value.then(function(v){
+                            promise.fulfill(v);
+                        }, function(r){
+                            promise.reject(r);
+                        });
+
+                        return;
+                    }
+
+                    promise.fulfill(value);
+
+                    return;
+                });
+            }
 
             this._addEvents({
                 'fulfill' : function(e) {
-                    var value = e.args, error;
-
-                    async(function(){
-                        if (isFunction(cb)){
-                            try {
-                                value = cb(value);
-                            } catch(er) {
-                                value = er;
-                                error = true;
-                            }
-                        }
-
-                        if (error) {
-                            promise.reject(value);
-                            return;
-                        }
-
-                        if (isThenable(value)){
-                            value.then(function(value){
-                                promise.fulfill(value);
-                            }, function(reason) {
-                                promise.reject(reason);
-                            });
-                        }else {
-                            promise.fulfill(value);
-                        }
-                    });
+                    checkValue('fulfil', onFulfill, e.args);
                 },
                 'reject' : function(e) {
-                    var reason = e.args;
-
-                    async(function(){
-                        if (isFunction(err)){
-                            try {
-                                reason = err(e.args);
-                            } catch (er) {
-                                reason = er;
-                            }
-                        }
-
-                        promise.reject(reason);
-                    });
+                    checkValue('reject', onReject, e.args);
                 }
             });
 
@@ -227,7 +233,7 @@
                 this.fulfillment_state = Promise.STATES.FULFILLED;
                 this.fulfillment_value = value;
                 this.isFulfilled = true;
-                this._fireEvent('fulfill:latched', value);
+                this._fireEvent('fulfill', value);
             }
 
             return this;
@@ -248,7 +254,7 @@
             this.fulfillment_state = Promise.STATES.REJECTED;
             this.rejection_reason = reason;
             this.isRejected = true;
-            this._fireEvent('reject:latched', reason);
+            this._fireEvent('reject', reason);
 
             return this;
         }
@@ -276,15 +282,20 @@
                 });
             }
         }
+
         function ExtPromise(){
             Promise.apply(this, arguments);
+
+            methods.forEach(function(name){
+                this[name] = wrap(name);
+            }.bind(this));
         }
 
         methods.forEach(function(name){
             wrapped_methods[name] = wrap(name);
         });
 
-        extend(ExtPromise, Promise, wrapped_methods);
+        extend(ExtPromise, Promise, {});
 
         return ExtPromise;
     };
