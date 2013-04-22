@@ -48,19 +48,37 @@ describe(['Shvua'], "Promise", function(Promise){
     });
 
     it("Should be able to function even when extending object with events api", function(done){
-        function empty(){};
         var names = 'addEvent fireEvent addEvents fireLatchedEvent'.split(' '),
+            values = [],
             obj = {},
-            promise;
+            promise, p;
 
-        names.forEach(function(name){obj[name]=empty});
+        function mock(v) {
+            values.push(v);
+        }
+
+        names.forEach(function(name){obj[name]=mock;});
 
         promise = Promise.extend(obj, names);
 
-        new promise(function(f){
+        p = new promise(function(f){
             f(1)
-        }).addEvent('foo').then(function(value){
-            done();
         })
+
+        names.forEach(function(name){
+            p[name](name);
+        });
+
+        expect(values.length).toEqual(0);
+
+        p.then(function(value) {
+            values.push(value);
+            names.push(value);
+        });
+
+        setTimeout(function(){
+            expect(values).toEqual(names);
+            done();
+        }, 50);
     });
 });
