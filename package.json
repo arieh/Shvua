@@ -1,6 +1,6 @@
 {
   "name": "shvua",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Promise/A+ compliant library, that allows you to extend your object's methods with promise-like API",
   "main": "src/Shvua.js",
   "directories": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/arieh/Promise.js.git"
+    "url": "git://github.com/arieh/Shvua.git"
   },
   "author": "arieh@glzr.co.il",
   "license": "MIT",
