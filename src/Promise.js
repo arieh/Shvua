@@ -7,7 +7,7 @@
             return factory(Events.Events);
         });
     } else {
-        root.Promise = factory(Events);
+        root.Promise = factory(root.Events);
     }
 }(this, function (Events){
     /**
