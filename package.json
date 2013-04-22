@@ -1,7 +1,7 @@
 {
-  "name": "arieh-promise",
+  "name": "shvua",
   "version": "0.1.1",
-  "description": "<a href=\"http://promises-aplus.github.com/promises-spec\"><img src=\"http://promises-aplus.github.com/promises-spec/assets/logo-small.png\" align=\"right\" /></a>",
+  "description": "A Promise/A+ compliant library, that allows you to extend your object's methods with promise-like API",
   "main": "src/Promise.js",
   "directories": {
     "test": "test"
@@ -13,7 +13,7 @@
   "author": "arieh@glzr.co.il",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "7396d2c20ddcc0a6be6f752b50b6030bf35aefdb",
+  "gitHead": "fa7132f2e885a4dc70fbf5919d1cb6f1256648eb",
   "dependencies" : {
     "arieh-events" : "*"
   }
