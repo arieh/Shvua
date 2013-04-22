@@ -6,6 +6,14 @@ Promise.js
 This library provides a [Promises/A+](http://promises-aplus.github.io/promises-spec/) compatible
 Promise object.
 
+The library is both CommonJS and AMD compatible.
+
+## Installation
+
+```
+npm install arieh-promise
+```
+
 ## Basic Usage
 
 A Promise's constructor can either relieve a function or another promise as its parameters. In case a function was provided,
