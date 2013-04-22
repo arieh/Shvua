@@ -156,14 +156,16 @@
 
             this._addEvents({
                 'fulfill' : function(e) {
-                    var value, error;
+                    var value = e.args, error;
 
                     async(function(){
-                        try {
-                            value = isFunction(cb) && cb(e.args);
-                        } catch(er) {
-                            value = er;
-                            error = true;
+                        if (isFunction(cb)){
+                            try {
+                                value = cb(value);
+                            } catch(er) {
+                                value = er;
+                                error = true;
+                            }
                         }
 
                         if (error) {
