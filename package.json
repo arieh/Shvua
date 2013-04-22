@@ -1,6 +1,6 @@
 {
   "name": "arieh-promise",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "<a href=\"http://promises-aplus.github.com/promises-spec\"><img src=\"http://promises-aplus.github.com/promises-spec/assets/logo-small.png\" align=\"right\" /></a>",
   "main": "src/Promise.js",
   "directories": {
