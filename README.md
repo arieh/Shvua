@@ -20,7 +20,7 @@ A Shvua's constructor can either relieve a function or another promise as its pa
 that function would receive 2 parameters - a `fulfill` function and a `reject` function:
 
 ```js
-var promise = new (function(fulfill, reject){
+var promise = new Shvua(function(fulfill, reject){
     var value = someOperation();
 
     if (value){
