@@ -15,6 +15,12 @@
   "readmeFilename": "README.md",
   "gitHead": "49a3fc909e794722232fb262c8fc756c62b12df2",
   "dependencies" : {
-    "arieh-events" : "*"
+    "eventsjs" : "1.2.3"
+  },
+  "devDependencies": {
+    "promises-aplus-tests": "*"
+  },
+  "scripts": {
+    "test": "promises-aplus-tests ./test/adapter.js"
   }
 }

@@ -1,6 +1,6 @@
 (function (root, factory) {
     if (typeof exports === 'object') {
-        var Events = require('arieh-events').Events;
+        var Events = require('eventsjs').Events;
         module.exports = factory(Events);
     } else if (typeof define === 'function' && define.amd) {
         define(['Events'],function (Events) {
