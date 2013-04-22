@@ -1,0 +1,20 @@
+{
+  "name": "arieh-romise",
+  "version": "0.1.0",
+  "description": "<a href=\"http://promises-aplus.github.com/promises-spec\"><img src=\"http://promises-aplus.github.com/promises-spec/assets/logo-small.png\" align=\"right\" /></a>",
+  "main": "src/Promise.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/arieh/Promise.js.git"
+  },
+  "author": "arieh@glzr.co.il",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "7396d2c20ddcc0a6be6f752b50b6030bf35aefdb",
+  "dependencies" : {
+    "arieh-events" : "*"
+  }
+}
