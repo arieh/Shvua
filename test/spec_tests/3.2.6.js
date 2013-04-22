@@ -43,7 +43,7 @@ function (adapter, testThreeCases, assert) {
                         return expectedValue;
                     });
 
-                    promise2.then(function onPromise2Fulfilled(actualValue) {
+                    promise2.then(null, function onPromise2Fulfilled(actualValue) {
                         assert.strictEqual(actualValue, expectedValue);
                         done();
                     });
@@ -149,7 +149,7 @@ function (adapter, testThreeCases, assert) {
 
                 setTimeout(function () {
                     assert.strictEqual(wasFulfilled, false);
-                    assert.strictEqual(wasRejected, false);
+                    assert.strictEqual(wasRejected, true);
                     done();
                 }, 100);
             });
@@ -185,13 +185,13 @@ function (adapter, testThreeCases, assert) {
                     });
                 });
                 describe("`promise1` is rejected, and `returnedPromise` is:", function () {
-                    testFulfilled(sentinel, function (returnedPromise, done) {
+                    testRejected(sentinel, function (returnedPromise, done) {
                         var promise1 = rejected(dummy);
                         var promise2 = promise1.then(null, function onRejected() {
                             return returnedPromise;
                         });
 
-                        promise2.then(function onPromise2Fulfilled(value) {
+                        promise2.then(null, function onPromise2Fulfilled(value) {
                             assert.strictEqual(value, sentinel);
                             done();
                         });
@@ -201,11 +201,11 @@ function (adapter, testThreeCases, assert) {
                         var promise1 = rejected(dummy);
                         var promise2 = promise1.then(null, function onRejected() {
                             return {
-                                then: function (f) { f(sentinel); }
+                                then: function (f,r) { r(sentinel); }
                             };
                         });
 
-                        promise2.then(function onPromise2Fulfilled(value) {
+                        promise2.then(null, function onPromise2Rejected(value) {
                             assert.strictEqual(value, sentinel);
                             done();
                         });

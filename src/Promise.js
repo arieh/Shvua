@@ -237,7 +237,17 @@
          * @chainable
          */
         reject : function(reason) {
+            var $this = this;
+
             if (this.fulfillment_state != Promise.STATES.PENDING) {
+                return this;
+            }
+
+            if (isThenable(reason)) {
+                reason.then(null, function(reason){
+                    $this.reject(reason);
+                });
+
                 return this;
             }
 
