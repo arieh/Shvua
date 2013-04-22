@@ -4,7 +4,7 @@ Promise.js
 ===========
 
 This library provides a [Promises/A+](http://promises-aplus.github.io/promises-spec/) compatible
-Promise object.
+Promise object, as well as providing a method for wrapping your object's methods with promise-like API.
 
 The library is both CommonJS and AMD compatible.
 
