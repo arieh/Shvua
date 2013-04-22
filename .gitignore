@@ -16,3 +16,4 @@ public/_src
 atlassian-ide-plugin.xml
 clean.sh
 clean.js
+node_modules
