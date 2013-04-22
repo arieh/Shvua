@@ -1,3 +1,5 @@
+<a href="http://promises-aplus.github.com/promises-spec"><img src="http://promises-aplus.github.com/promises-spec/assets/logo-small.png" align="right" /></a>
+
 Promise.js
 ===========
 
@@ -6,7 +8,7 @@ Promise object.
 
 ## Basic Usage
 
-A promise's constructor can either relieve a function or another promise as its parameters. In case a function was provided,
+A Promise's constructor can either relieve a function or another promise as its parameters. In case a function was provided,
 that function would receive 2 parameters - a `fulfill` function and a `reject` function:
 
 ```js
@@ -75,5 +77,4 @@ obj.async()
       console.log(obj.a);//a
       console.log(e);//test error
    });
-```
 ```
