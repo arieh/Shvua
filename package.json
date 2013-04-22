@@ -13,7 +13,7 @@
   "author": "arieh@glzr.co.il",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "fa7132f2e885a4dc70fbf5919d1cb6f1256648eb",
+  "gitHead": "ca5144ea05572a8b6ec4671386ca98203cbcf945",
   "dependencies" : {
     "arieh-events" : "*"
   }
