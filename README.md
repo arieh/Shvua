@@ -16,11 +16,11 @@ npm install shvua
 
 ## Basic Usage
 
-A Promise's constructor can either relieve a function or another promise as its parameters. In case a function was provided,
+A Shvua's constructor can either relieve a function or another promise as its parameters. In case a function was provided,
 that function would receive 2 parameters - a `fulfill` function and a `reject` function:
 
 ```js
-var promise = new Promise(function(fulfill, reject){
+var promise = new (function(fulfill, reject){
     var value = someOperation();
 
     if (value){
@@ -33,7 +33,7 @@ var promise = new Promise(function(fulfill, reject){
 If a promise was provided, the new Promise would fulfill/reject according to provided promise.
 If no parameter was provided, you can still fulfill/reject the promise via it's `fulfill` and `reject` methods.
 
-## `Promise.extend`
+## `Shvua.extend`
 
 In addition to providing the basic implementation of the Promise API, this library also allows you to create
 chainable promise APIs for you objects.
@@ -43,7 +43,7 @@ For example - let's say we have the following object:
 ```js
 var obj = {
     async : function(){
-        return new Promise(function(f,r){
+        return new Shvua(function(f,r){
             //some async operation
         });
     },
@@ -51,11 +51,11 @@ var obj = {
 };
 ```
 
-Using `Promise.extend`, we can make `obj`'s `async` method create a costume promise object that will provide
+Using `Shvua.extend`, we can make `obj`'s `async` method create a costume promise object that will provide
 a deffered access to `obj`'s methods:
 
 ```js
-obj.Promise = Promise.extend(obj, ['setA']);
+obj.Promise = Shvua.extend(obj, ['setA']);
 obj.async = function(){
     return new obj.Promise(function(f,r){
         //some async operation

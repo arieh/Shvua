@@ -1,4 +1,4 @@
-describe(['Promise'], "Promise", function(Promise){
+describe(['Shvua'], "Promise", function(Promise){
     var undef;
 
     it('Should have a functioning extend method', function(done){
@@ -51,13 +51,13 @@ describe(['Promise'], "Promise", function(Promise){
         function empty(){};
         var names = 'addEvent fireEvent addEvents fireLatchedEvent'.split(' '),
             obj = {},
-            promise,p;
+            promise;
 
         names.forEach(function(name){obj[name]=empty});
 
         promise = Promise.extend(obj, names);
 
-        p = new Promise(function(f){
+        new promise(function(f){
             f(1)
         }).addEvent('foo').then(function(value){
             done();

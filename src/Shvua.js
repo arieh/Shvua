@@ -7,11 +7,11 @@
             return factory(Events.Events);
         });
     } else {
-        root.Promise = factory(root.Events);
+        root.Shvua = factory(root.Events);
     }
 }(this, function (Events){
     /**
-     * @module Promise
+     * @module Shvua
      */
 
     var undef, async;
@@ -58,13 +58,13 @@
     }());
 
     /**
-     * @class Promise
+     * @class Shvua
      * @constructor
      * @uses Events
      *
      * @param {fucntion} [cb] a function to use for updating promise state. Paramaters passed to callback will be fullfil function and reject function.
      */
-    function Promise(cb){
+    function Shvua(cb){
         var fulfill = this.fulfill.bind(this),
             reject  = this.reject.bind(this);
 
@@ -114,14 +114,14 @@
      * @static
      * @type ENUM
      */
-    Promise.STATES = {
+    Shvua.STATES = {
         PENDING : 0,
         FULFILLED : 1,
         REJECTED : 2
     };
 
-    Promise.prototype = {
-        constructor : Promise,
+    Shvua.prototype = {
+        constructor : Shvua,
 
         /**
          * @property isFulfilled
@@ -138,9 +138,9 @@
         isRejected : false,
         /**
          * @property fulfillment_state
-         * @type Promise.STATES
+         * @type Shvua.STATES
          */
-        fulfillment_state : Promise.STATES.PENDING,
+        fulfillment_state : Shvua.STATES.PENDING,
         /**
          * @property fulfillment_value
          * value of fulfilled promise
@@ -164,7 +164,7 @@
          * @param {function} [onFulfill] a callback to call when promise has been fulfilled. Will be passed promise's value.
          *                        for more info look in spec.
          * @param {function} [onReject] a callback to call upon rejection. Will be passed promise's rejection reason.
-         * @returns {Promise}
+         * @returns {Shvua}
          */
         then : function(onFulfill, onReject) {
             var promise = this.createPromise();
@@ -211,7 +211,7 @@
         },
 
         /**
-         * this method can be used to fulfil a Promise outside of it's scope.
+         * this method can be used to fulfil a Shvua outside of it's scope.
          *
          * @param value
          * @chainable
@@ -219,7 +219,7 @@
         fulfill : function(value) {
             var $this = this;
 
-            if (this.fulfillment_state != Promise.STATES.PENDING) {
+            if (this.fulfillment_state != Shvua.STATES.PENDING) {
                 return this;
             }
 
@@ -230,7 +230,7 @@
                     $this.reject(reason);
                 });
             } else {
-                this.fulfillment_state = Promise.STATES.FULFILLED;
+                this.fulfillment_state = Shvua.STATES.FULFILLED;
                 this.fulfillment_value = value;
                 this.isFulfilled = true;
                 this._fireEvent('fulfill', value);
@@ -247,11 +247,11 @@
         reject : function(reason) {
             var $this = this;
 
-            if (this.fulfillment_state != Promise.STATES.PENDING) {
+            if (this.fulfillment_state != Shvua.STATES.PENDING) {
                 return this;
             }
 
-            this.fulfillment_state = Promise.STATES.REJECTED;
+            this.fulfillment_state = Shvua.STATES.REJECTED;
             this.rejection_reason = reason;
             this.isRejected = true;
             this._fireEvent('reject', reason);
@@ -268,9 +268,9 @@
      *
      * @param {mixed} obj target object
      * @param {array} methods a list of method names to wrap
-     * @returns {Promise} a new extended Promise constructor
+     * @returns {Shvua} a new extended Shvua constructor
      */
-    Promise.extend = function(obj, methods){
+    Shvua.extend = function(obj, methods){
         var wrapped_methods = {};
 
         function wrap(name){
@@ -284,7 +284,7 @@
         }
 
         function ExtPromise(){
-            Promise.apply(this, arguments);
+            Shvua.apply(this, arguments);
 
             methods.forEach(function(name){
                 this[name] = wrap(name);
@@ -295,10 +295,10 @@
             wrapped_methods[name] = wrap(name);
         });
 
-        extend(ExtPromise, Promise, {});
+        extend(ExtPromise, Shvua, {});
 
         return ExtPromise;
     };
 
-    return Promise;
+    return Shvua;
 }));
