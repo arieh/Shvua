@@ -1,17 +1,17 @@
 <a href="http://promises-aplus.github.com/promises-spec"><img src="http://promises-aplus.github.com/promises-spec/assets/logo-small.png" align="right" /></a>
 
-Promise.js
+Shvua
 ===========
 
 This library provides a [Promises/A+](http://promises-aplus.github.io/promises-spec/) compatible
-Promise object.
+Promise object, as well as providing a method for wrapping your object's methods with promise-like API.
 
 The library is both CommonJS and AMD compatible.
 
 ## Installation
 
 ```
-npm install arieh-promise
+npm install shvua
 ```
 
 ## Basic Usage
@@ -86,3 +86,8 @@ obj.async()
       console.log(e);//test error
    });
 ```
+
+## Meaning of name
+
+"Shvua" is the hebrew word for a promise (well, more like an oath - the hebrew word for a promise is havtacha but that's
+a little too hard for typing without typos...)
