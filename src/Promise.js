@@ -245,14 +245,6 @@
                 return this;
             }
 
-            if (isThenable(reason)) {
-                reason.then(null, function(reason){
-                    $this.reject(reason);
-                });
-
-                return this;
-            }
-
             this.fulfillment_state = Promise.STATES.REJECTED;
             this.rejection_reason = reason;
             this.isRejected = true;
