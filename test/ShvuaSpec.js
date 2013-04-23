@@ -1,5 +1,5 @@
-describe(['Shvua'], "Promise", function(Promise){
-    var undef;
+describe(['Shvua'], "Promise", function(Shvua){
+    var undef, Promise = Shvua.Promise;
 
     it('Should have a functioning extend method', function(done){
         function test(){
@@ -21,7 +21,7 @@ describe(['Shvua'], "Promise", function(Promise){
                 });
             };
 
-            promise = Promise.extend(this, ['setA', 'setB']);
+            promise = Shvua.extend(this, ['setA', 'setB']);
         }
 
         var tst = new test(), promise;
@@ -59,7 +59,7 @@ describe(['Shvua'], "Promise", function(Promise){
 
         names.forEach(function(name){obj[name]=mock;});
 
-        promise = Promise.extend(obj, names);
+        promise = Shvua.extend(obj, names);
 
         p = new promise(function(f){
             f(1)

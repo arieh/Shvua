@@ -1,4 +1,4 @@
-var Promise = require('../src/Shvua.js');
+var Promise = require('../src/Shvua.js').Promise;
 
 exports.fulfilled = function(value) {
     var p = new Promise();

@@ -20,7 +20,7 @@ A Shvua's constructor can either relieve a function or another promise as its pa
 that function would receive 2 parameters - a `fulfill` function and a `reject` function:
 
 ```js
-var promise = new Shvua(function(fulfill, reject){
+var promise = new Shvua.Promise(function(fulfill, reject){
     var value = someOperation();
 
     if (value){
@@ -43,7 +43,7 @@ For example - let's say we have the following object:
 ```js
 var obj = {
     async : function(){
-        return new Shvua(function(f,r){
+        return new Shvua.Promise(function(f,r){
             //some async operation
         });
     },

@@ -14,7 +14,7 @@
      * @module Shvua
      */
 
-    var undef, async;
+    var undef, async, Shvua = {};
 
     function isThenable(obj) {
         return obj && typeof obj.then == 'function';
@@ -27,7 +27,7 @@
     function extend(obj, parent, methods) {
         var name;
 
-        function F(){};
+        function F(){}
 
         F.prototype = parent.prototype || parent;
 
@@ -49,7 +49,7 @@
                 }
             }
         } catch(e) {
-            if (window.setImediate) return window.setImediate;
+            if (window.setImmediate) return window.setImmediate;
         }
 
         return function(cb){
@@ -58,13 +58,13 @@
     }());
 
     /**
-     * @class Shvua
+     * @class Shvua.Promise
      * @constructor
      * @uses Events
      *
-     * @param {fucntion} [cb] a function to use for updating promise state. Paramaters passed to callback will be fullfil function and reject function.
+     * @param {fucntion} [cb] a function to use for updating promise state. Parameters passed to callback will be fulfill function and reject function.
      */
-    function Shvua(cb){
+    function Promise(cb){
         var fulfill = this.fulfill.bind(this),
             reject  = this.reject.bind(this);
 
@@ -72,7 +72,7 @@
 
         this._addEvents = function(events) {
             var type;
-            for (type in events) {
+            for (type in events) if (events.hasOwnProperty(type)){
                 Events.addEvent.call(this, type, events[type]);
             }
         };
@@ -98,6 +98,8 @@
         });
     }
 
+    Shvua.Promise = Promise;
+
     /**
      * @event fulfill
      * fires when a promise has been fulfilled
@@ -114,14 +116,14 @@
      * @static
      * @type ENUM
      */
-    Shvua.STATES = {
+    Promise.STATES = {
         PENDING : 0,
         FULFILLED : 1,
         REJECTED : 2
     };
 
-    Shvua.prototype = {
-        constructor : Shvua,
+    Promise.prototype = {
+        constructor : Promise,
 
         /**
          * @property isFulfilled
@@ -138,9 +140,9 @@
         isRejected : false,
         /**
          * @property fulfillment_state
-         * @type Shvua.STATES
+         * @type Promise.STATES
          */
-        fulfillment_state : Shvua.STATES.PENDING,
+        fulfillment_state : Promise.STATES.PENDING,
         /**
          * @property fulfillment_value
          * value of fulfilled promise
@@ -164,7 +166,7 @@
          * @param {function} [onFulfill] a callback to call when promise has been fulfilled. Will be passed promise's value.
          *                        for more info look in spec.
          * @param {function} [onReject] a callback to call upon rejection. Will be passed promise's rejection reason.
-         * @returns {Shvua}
+         * @returns {Shvua.Promise}
          */
         then : function(onFulfill, onReject) {
             var promise = this.createPromise();
@@ -193,8 +195,6 @@
                     }
 
                     promise.fulfill(value);
-
-                    return;
                 });
             }
 
@@ -211,7 +211,7 @@
         },
 
         /**
-         * this method can be used to fulfil a Shvua outside of it's scope.
+         * this method can be used to fulfil a Promise outside of it's scope.
          *
          * @param value
          * @chainable
@@ -219,7 +219,7 @@
         fulfill : function(value) {
             var $this = this;
 
-            if (this.fulfillment_state != Shvua.STATES.PENDING) {
+            if (this.fulfillment_state != Promise.STATES.PENDING) {
                 return this;
             }
 
@@ -230,7 +230,7 @@
                     $this.reject(reason);
                 });
             } else {
-                this.fulfillment_state = Shvua.STATES.FULFILLED;
+                this.fulfillment_state = Promise.STATES.FULFILLED;
                 this.fulfillment_value = value;
                 this.isFulfilled = true;
                 this._fireEvent('fulfill', value);
@@ -245,13 +245,11 @@
          * @chainable
          */
         reject : function(reason) {
-            var $this = this;
-
-            if (this.fulfillment_state != Shvua.STATES.PENDING) {
+            if (this.fulfillment_state != Promise.STATES.PENDING) {
                 return this;
             }
 
-            this.fulfillment_state = Shvua.STATES.REJECTED;
+            this.fulfillment_state = Promise.STATES.REJECTED;
             this.rejection_reason = reason;
             this.isRejected = true;
             this._fireEvent('reject', reason);
@@ -268,7 +266,7 @@
      *
      * @param {mixed} obj target object
      * @param {array} methods a list of method names to wrap
-     * @returns {Shvua} a new extended Shvua constructor
+     * @returns {Shvua.ExtPromise} a new extended Promise constructor
      */
     Shvua.extend = function(obj, methods){
         var wrapped_methods = {};
@@ -283,8 +281,13 @@
             }
         }
 
+        /**
+         * @class Shvua.ExtPromise
+         * @extends Promise
+         * @constructor
+         */
         function ExtPromise(){
-            Shvua.apply(this, arguments);
+            Promise.apply(this, arguments);
 
             methods.forEach(function(name){
                 this[name] = wrap(name);
@@ -295,7 +298,7 @@
             wrapped_methods[name] = wrap(name);
         });
 
-        extend(ExtPromise, Shvua, {});
+        extend(ExtPromise, Promise, {});
 
         return ExtPromise;
     };

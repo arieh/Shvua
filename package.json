@@ -1,6 +1,6 @@
 {
   "name": "shvua",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "A Promise/A+ compliant library, that allows you to extend your object's methods with promise-like API",
   "main": "src/Shvua.js",
   "directories": {
