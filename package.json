@@ -13,7 +13,7 @@
   "author": "arieh@glzr.co.il",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "5034c0974b80c47c1566b05262e1a53812596c38",
+  "gitHead": "b7669446cfd5d4b45f4bdb8ff8784c9e0d4d348b",
   "dependencies" : {
     "eventsjs" : "1.2.3"
   },
