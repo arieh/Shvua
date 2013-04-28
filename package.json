@@ -1,6 +1,6 @@
 {
   "name": "shvua",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Promise/A+ compliant library, that allows you to extend your object's methods with promise-like API",
   "main": "src/Shvua.js",
   "directories": {
@@ -13,7 +13,7 @@
   "author": "arieh@glzr.co.il",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "b7669446cfd5d4b45f4bdb8ff8784c9e0d4d348b",
+  "gitHead": "86410323125b531428b2fea33e318f665e3520e5",
   "dependencies" : {
     "eventsjs" : "1.2.3"
   },
