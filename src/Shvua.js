@@ -126,33 +126,20 @@
         constructor : Promise,
 
         /**
-         * @property isFulfilled
-         * whether or not promise has been fulfilled
-         * @type Boolean
-         */
-        isFulfilled : false,
-
-        /**
-         * @property isRejected
-         * whether or not promise has been rejected
-         * @type Boolean
-         */
-        isRejected : false,
-        /**
-         * @property fulfillment_state
+         * @property $fulfillment_state
          * @type Promise.STATES
          */
-        fulfillment_state : Promise.STATES.PENDING,
+        $fulfillment_state : Promise.STATES.PENDING,
         /**
-         * @property fulfillment_value
+         * @property $fulfillment_value
          * value of fulfilled promise
          */
-        fulfillment_value : undef,
+        $fulfillment_value : undef,
         /**
-         * @property rejection_reason
+         * @property $rejection_reason
          * reason for rejected promise
          */
-        rejection_reason : undef,
+        $rejection_reason : undef,
         createPromise : function(){
             var cnstr = this.constructor;
 
@@ -168,7 +155,7 @@
          * @param {function} [onReject] a callback to call upon rejection. Will be passed promise's rejection reason.
          * @returns {Shvua.Promise}
          */
-        then : function(onFulfill, onReject) {
+        then : function then(onFulfill, onReject) {
             var promise = this.createPromise();
 
             function checkValue(action, cb, value){
@@ -216,10 +203,10 @@
          * @param value
          * @chainable
          */
-        fulfill : function(value) {
+        fulfill : function fulfill(value) {
             var $this = this;
 
-            if (this.fulfillment_state != Promise.STATES.PENDING) {
+            if (this.$fulfillment_state != Promise.STATES.PENDING) {
                 return this;
             }
 
@@ -230,9 +217,8 @@
                     $this.reject(reason);
                 });
             } else {
-                this.fulfillment_state = Promise.STATES.FULFILLED;
-                this.fulfillment_value = value;
-                this.isFulfilled = true;
+                this.$fulfillment_state = Promise.STATES.FULFILLED;
+                this.$fulfillment_value = value;
                 this._fireEvent('fulfill', value);
             }
 
@@ -244,17 +230,40 @@
          * @param reason
          * @chainable
          */
-        reject : function(reason) {
-            if (this.fulfillment_state != Promise.STATES.PENDING) {
+        reject : function reject(reason) {
+            if (this.$fulfillment_state != Promise.STATES.PENDING) {
                 return this;
             }
 
-            this.fulfillment_state = Promise.STATES.REJECTED;
-            this.rejection_reason = reason;
-            this.isRejected = true;
+            this.$fulfillment_state = Promise.STATES.REJECTED;
+            this.$rejection_reason = reason;
             this._fireEvent('reject', reason);
 
             return this;
+        },
+
+        /**
+         * This method will enter the callback into the fulfill stack and will return a Promise for it
+         *
+         * @method done
+         * @public
+         * @param {Function} cb
+         * @returns {Shvua.Promise}
+         */
+        done : function done(cb){
+            return this.then(cb);
+        },
+
+        /**
+         * This method will enter the callback into the reject stack and will return a Promise for it
+         *
+         * @method fail
+         * @public
+         * @param cb
+         * @returns {Shvua.Promise}
+         */
+        fail : function fail(cb){
+            return this.then(null, cb);
         }
     };
 

@@ -6,6 +6,8 @@ Shvua
 This library provides a [Promises/A+](http://promises-aplus.github.io/promises-spec/) compatible
 Promise object, as well as providing a method for wrapping your object's methods with promise-like API.
 
+The library also has the basic syntax of the ECMA6 futures spec, providing a `done` and `fail` methods.
+
 The library is both CommonJS and AMD compatible.
 
 ## Installation

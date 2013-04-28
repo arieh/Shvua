@@ -81,4 +81,70 @@ describe(['Shvua'], "Promise", function(Shvua){
             done();
         }, 50);
     });
+
+    describe("Should have a `done` and `fail` method, that returns a promise", function() {
+        var result = {foo:'bar'};
+
+        it("Should have a `done` and `fail` methods that returns a promise. `Done` should run when promise is fulfilled. `Fail` should not", function(done){
+            var p1 = new Shvua.Promise(),
+                done_promise,
+                fail_promise,
+                expected= {
+                    done : false,
+                    fail : false
+                };
+
+            done_promise = p1.done(function(value) {
+                expect(value).toEqual(result);
+                expected.done = true;
+            });
+
+            fail_promise = p1.fail(function(value){
+                expected.fail = true;
+            });
+
+            expect(done_promise instanceof Shvua.Promise).toEqual(true);
+            expect(fail_promise instanceof Shvua.Promise).toEqual(true);
+
+            p1.fulfill(result);
+
+            setTimeout(function(){
+                expect(expected.done).toEqual(true);
+                expect(expected.fail).toEqual(false);
+                done();
+            });
+        });
+
+
+
+        it("Should have a `done` and `fail` methods that returns a promise. `fail` should run when promise is rejected. `done` should not", function(done){
+            var p1 = new Shvua.Promise(),
+                done_promise,
+                fail_promise,
+                expected= {
+                    done : false,
+                    fail : false
+                };
+
+            done_promise = p1.done(function() {
+                expected.done = true;
+            });
+
+            fail_promise = p1.fail(function(reason){
+                expect(reason).toEqual(result);
+                expected.fail = true;
+            });
+
+            expect(done_promise instanceof Shvua.Promise).toEqual(true);
+            expect(fail_promise instanceof Shvua.Promise).toEqual(true);
+
+            p1.reject(result);
+
+            setTimeout(function(){
+                expect(expected.done).toEqual(false);
+                expect(expected.fail).toEqual(true);
+                done();
+            });
+        });
+    });
 });

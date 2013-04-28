@@ -2,11 +2,12 @@ YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
         "Events",
-        "Promise"
+        "Shvua.ExtPromise",
+        "Shvua.Promise"
     ],
     "modules": [
         "Events",
-        "Promise"
+        "Shvua"
     ],
     "allModules": [
         {
@@ -14,8 +15,8 @@ YUI.add("yuidoc-meta", function(Y) {
             "name": "Events"
         },
         {
-            "displayName": "Promise",
-            "name": "Promise"
+            "displayName": "Shvua",
+            "name": "Shvua"
         }
     ]
 } };
